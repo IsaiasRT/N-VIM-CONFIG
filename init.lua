@@ -1,16 +1,30 @@
 vim.g.start_time = vim.fn.reltime()
 
-vim.opt.relativenumber = true
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-vim.opt.smartindent = true
-vim.opt.termguicolors = true
-vim.opt.clipboard = "unnamedplus"
-vim.opt.signcolumn = "yes"
-vim.g.mapleader = " "
-vim.g.nvim_surround_no_normal_mappings = true
-vim.opt.undofile = true
-vim.opt.undodir = vim.fn.stdpath("state") .. "/undo"
-vim.o.virtualedit = ""
-vim.opt.timeoutlen = 700
+require("config.settings")
+require("keymaps")
+
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.uv.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+require("lazy").setup({
+  spec = {
+    { import = "plugins" },
+  },
+  defaults = {
+    lazy = true,
+    version = false,
+  },
+  install = { colorscheme = { "tokyonight", "habamax" } },
+  checker = { enabled = false },
+  change_detection = { notify = false },
+})
